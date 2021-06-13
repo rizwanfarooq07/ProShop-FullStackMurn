@@ -28,16 +28,11 @@ const CartScreen = () => {
 
   const { cartItems } = cart;
 
-  useEffect(
-    () => {
-      if (productId) {
-        dispatch(addToCart(productId, qty));
-      }
-    },
-    [dispatch],
-    productId,
-    qty
-  );
+  useEffect(() => {
+    if (productId) {
+      dispatch(addToCart(productId, qty));
+    }
+  }, [dispatch, productId, qty]);
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
