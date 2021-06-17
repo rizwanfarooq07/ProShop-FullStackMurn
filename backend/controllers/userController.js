@@ -52,6 +52,20 @@ const getUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
+//@Desc  Delete user
+//@Route  DELETE /api/users/:id
+//@Access  Private/Admin
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    await user.remove();
+    res.json({ message: "User removed" });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
 //@Desc  UPDATE user profile
 //@Route  PUT/api/users/profile
 //@Access  Private
@@ -112,10 +126,55 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+//@Desc  Get user by id
+//@Route  GET/api/users/:id
+//@Access  Private/Admin
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
+});
+
+//@Desc  UPDATE user by id
+//@Route  PUT/api/users/:id
+//@Access  Private/Admin
+const updateUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  console.log("----body----", req.body);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.isAdmin = req.body.isAdmin || user.isAdmin;
+
+    const updatedUser = await user.save();
+
+    console.log("---update user----0", updatedUser);
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
 module.exports = {
   authUsers,
   getUserProfile,
   registerUser,
   updateUserProfile,
   getUsers,
+  deleteUser,
+  getUserById,
+  updateUserById,
 };

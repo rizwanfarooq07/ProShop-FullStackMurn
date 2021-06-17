@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 
 const users = [
   {
-    name: "User",
+    name: "Admin User",
     email: "admin@example.com",
     password: bcrypt.hashSync("123456", 10),
     isAdmin: true,
